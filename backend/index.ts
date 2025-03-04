@@ -1,6 +1,7 @@
 import express from "express";
 import { errorHandler } from "./middleware/errorHandler";
 import connectMongoDB from "./database/db";
+import router from "./routes/user";
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
+app.use(express.json());
+app.use("/v1",router)
 app.use(errorHandler);
 
 connectMongoDB()
