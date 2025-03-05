@@ -1,19 +1,27 @@
 import { UserModel } from "../models/model";
-import type { User } from "../services/user";
+import type { RegisterUser } from "../services/user";
 
 
-const createUserRepo = async (user: User) => {
+const createUserRepo = async (user: RegisterUser) => {
     const createdUser =await UserModel.create({
-        FirstName: user.FirstName,
-        MiddleName: user.MiddleName,
-        LastName: user.LastName,
+        FirstName: user.firstName,
+        MiddleName: user.middleName,
+        LastName: user.lastName,
         email: user.email,
-        PhoneNumber: user.PhoneNumber,
-        Password: user.Password,
-        Role: user.Role
+        PhoneNumber: user.phoneNumber,
+        Password: user.password,
+        Role: user.role
     });
 
     return createdUser;
 }
 
-export { createUserRepo };
+const userExists = async (email: string) => {
+    const user = await UserModel.findOne({email});
+    if (user) {
+        return user
+    }
+    return null;
+}
+
+export { createUserRepo,userExists };

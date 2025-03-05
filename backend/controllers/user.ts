@@ -1,20 +1,20 @@
 import type {Request, Response} from "express";
 import asyncWrapper from "../middleware/asyncWrapper";
-import { createUserSevice } from "../services/user";
+import { createUserSevice, loginUserSevice } from "../services/user";
 
 
 
 const createUser = asyncWrapper(
     async(req: Request, res: Response) => {
-        const {FirstName, MiddleName, LastName, email, PhoneNumber, Password,Role} = req.body;
+        const {firstName, middleName, lastName, email, phoneNumber, password,role} = req.body;
         const  user = await createUserSevice({
-            FirstName,
-            MiddleName,
-            LastName,
+            firstName,
+            middleName,
+            lastName,
             email,
-            PhoneNumber,
-            Password,
-            Role
+            phoneNumber,
+            password,
+            role
         })
 
         res.status(201).json({
@@ -25,5 +25,17 @@ const createUser = asyncWrapper(
     }
 );
 
+const loginUser = asyncWrapper(
+    async(req: Request, res: Response) => {
+        const {email, password} = req.body;
+        const data = await loginUserSevice({email, password})
 
-export { createUser };
+        res.status(200).json({
+            status: 'ok',
+            data: data,
+        })
+    }
+)
+
+
+export { createUser, loginUser};

@@ -6,7 +6,6 @@ import { StatusCodes } from 'http-status-codes';
 export function validateData(schema: z.ZodType<any>) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log(req.body)
       schema.parse(req.body);
       next();
     } catch (error) {
