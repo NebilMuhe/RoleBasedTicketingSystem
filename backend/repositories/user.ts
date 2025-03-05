@@ -4,11 +4,11 @@ import type { RegisterUser } from "../services/user";
 
 const createUserRepo = async (user: RegisterUser) => {
     const createdUser =await UserModel.create({
-        FirstName: user.firstName,
-        MiddleName: user.middleName,
-        LastName: user.lastName,
-        email: user.email,
-        PhoneNumber: user.phoneNumber,
+        FirstName: user.first_name,
+        MiddleName: user.middle_name,
+        LastName: user.last_name,
+        Email: user.email,
+        PhoneNumber: user.phone_number,
         Password: user.password,
         Role: user.role
     });
@@ -16,8 +16,11 @@ const createUserRepo = async (user: RegisterUser) => {
     return createdUser;
 }
 
-const userExists = async (email: string) => {
-    const user = await UserModel.findOne({email});
+const userExists = async (email: string,phone: string) => {
+    const user = await UserModel.findOne({
+        $or: [{ email: email }, { PhoneNumber: phone }]
+    });
+    
     if (user) {
         return user
     }

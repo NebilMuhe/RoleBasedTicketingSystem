@@ -6,13 +6,13 @@ import { createUserSevice, loginUserSevice } from "../services/user";
 
 const createUser = asyncWrapper(
     async(req: Request, res: Response) => {
-        const {firstName, middleName, lastName, email, phoneNumber, password,role} = req.body;
+        const {first_name, middle_name, last_name, email, phone_number, password,role} = req.body;
         const  user = await createUserSevice({
-            firstName,
-            middleName,
-            lastName,
+            first_name,
+            middle_name,
+            last_name,
             email,
-            phoneNumber,
+            phone_number,
             password,
             role
         })
@@ -27,8 +27,8 @@ const createUser = asyncWrapper(
 
 const loginUser = asyncWrapper(
     async(req: Request, res: Response) => {
-        const {email, password} = req.body;
-        const data = await loginUserSevice({email, password})
+        const {email, phone_number,password} = req.body;
+        const data = await loginUserSevice({phone_number,email, password})
 
         res.status(200).json({
             status: 'ok',

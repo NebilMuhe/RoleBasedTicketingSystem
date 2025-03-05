@@ -5,16 +5,17 @@ import fs from 'fs';
 import path from 'path';
 
 export interface RegisterUser {
-    firstName: string;
-    middleName: string;
-    lastName: string;
+    first_name: string;
+    middle_name: string;
+    last_name: string;
     email: string;
-    phoneNumber: string;
+    phone_number: string;
     password: string;
     role: string;
 }
 
 export interface LoginUser {
+    phone_number: string;
     email: string;
     password: string;
 }
@@ -31,19 +32,28 @@ const PUBLIC_KEY = fs.readFileSync(path.join(__dirname, process.env.PUBLIC_KEY_P
 
 
 const createUserSevice = async (user: RegisterUser) => {
+    const isUserExists = await userExists(user.email,user.phone_number);
+    if (isUserExists) {
+        throw new BadRequestError('User already exists');
+    }
     const argonHash = await Bun.password.hash(user.password, {
         algorithm: "argon2id",
         memoryCost: 4, 
         timeCost: 3, 
     });
     user.password = argonHash;
-    const createdUser = await createUserRepo(user);
-    return createdUser;
+    try {
+        const createdUser = await createUserRepo(user);
+        return createdUser;
+    } catch (error: any) {
+        console.error('User Creation Error:', error.stack || error);
+        throw new InternalServerError('Something Went Wrong. Please try again.');
+    }   
 }
 
 
 const loginUserSevice = async (user: LoginUser) => {
-    const userData = await userExists(user.email);
+    const userData = await userExists(user.email,user.phone_number);
     if (!userData) {
         throw new NotFoundError('User not found');
     }
